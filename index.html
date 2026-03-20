@@ -118,7 +118,7 @@
       If you want to watch, go to 8 Morris Place, Little Hartley on event days.
     </p>
 
-    <p><strong>Event Date:</strong> Set in code</p>
+    <p><strong>Event Date:</strong> <span class="event-date"></span></p>
 
     <a class="button" href="https://forms.gle/9UGuZr3Gxkk6PXg67" target="_blank">
       Submit Your Team
@@ -136,18 +136,31 @@
 </footer>
 
 <script>
-/* VOTING */
-function vote(team) {
-  localStorage.setItem("vote", team);
-  document.getElementById("voteResult").innerText = "You voted for " + team;
+/* ===== EVENT DATE (EDIT HERE) ===== */
+/* Format: YEAR, MONTH-1, DAY, HOUR, MINUTE */
+const eventDate = new Date(2026, 5, 1, 10, 0); 
+// June 1, 2026 at 10:00 AM
+
+/* ===== SHOW DATE (AU FORMAT) ===== */
+function formatDateAU(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
 }
 
-/* COUNTDOWN (EDIT DATE HERE) */
-const eventDate = new Date("2026-11-12T00:00:00"); // CHANGE THIS
+/* Put date on page */
+document.addEventListener("DOMContentLoaded", () => {
+  const dateText = formatDateAU(eventDate);
+  document.querySelectorAll(".event-date").forEach(el => {
+    el.innerText = dateText;
+  });
+});
 
+/* ===== COUNTDOWN ===== */
 function updateCountdown() {
   const now = new Date();
-  const diff = eventDate - now;
+  let diff = eventDate - now;
 
   if (diff <= 0) {
     document.getElementById("countdown").innerText = "Event Started!";
@@ -157,14 +170,20 @@ function updateCountdown() {
   const d = Math.floor(diff / (1000*60*60*24));
   const h = Math.floor((diff / (1000*60*60)) % 24);
   const m = Math.floor((diff / (1000*60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
 
   document.getElementById("countdown").innerText =
-    d + "d " + h + "h " + m + "m";
+    `${d}d ${h}h ${m}m ${s}s`;
 }
 
 setInterval(updateCountdown, 1000);
 updateCountdown();
-</script>
 
+/* ===== VOTING ===== */
+function vote(team) {
+  localStorage.setItem("vote", team);
+  document.getElementById("voteResult").innerText = "You voted for " + team;
+}
+</script>
 </body>
 </html>
